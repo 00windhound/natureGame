@@ -17,10 +17,12 @@ let spawnchoice = 1;
 
 class plants{
     constructor(){
-        this. x = 10;
+        this.group = 1;
+        this.x = 10;
         this.y = 10; 
         this.size = 10;
-        this.color = 'pink';
+        this.color = 'green';
+        this.age = 0
     }
     update(){
         this.age += 1;
@@ -31,20 +33,69 @@ class plants{
         ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
         ctx.fill();
     }
+    seeds(){
+        if(this.group === 1 && this.age > 1000){
+            this.age = 1
+            let rx = Math.random() *100 -50;
+            let ry = Math.random() *100 -50;
+            newx = this.x + rx
+            newy = this.y + ry
+            if(newx> 0 && newx< 1500){
+                if(newy >0 && newy < 1500){
+                    newseed(1, newx, newy, 'green')
+                }
+            }
+        }
+        else if(this.group === 2 && this.age > 1000){
+            this.age = 1
+            let rx = Math.random() *150 -75;
+            let ry = Math.random() *150 -75;
+            newx = this.x + rx
+            newy = this.y + ry
+            if(newx> 0 && newx< 1500){
+                if(newy >0 && newy < 1500){
+                    newseed(2, newx, newy, 'pink')
+                }
+            }
+        }
+        else if(this.group === 3 && this.age > 2000){
+            this.age = 1
+            let rx = Math.random() *500 -250;
+            let ry = Math.random() *500 -250;
+            newx = this.x + rx
+            newy = this.y + ry
+            if(newx> 0 && newx< 1500){
+                if(newy >0 && newy < 1500){
+                    newseed(3, newx, newy, 'brown')
+                }
+            }
+        }
+    }
+    
     // reproducing that also checks that location is within the borders
     // trees growing rather large
     // colision detection for trees so only squirrels can go in a tree
+}
+
+function newseed(group, x, y, color){
+    let seed1 = new plants();
+    seed1.group = group
+    seed1.x = x
+    seed1.y = y 
+    seed1.color = color;
+    allplants.push(seed1);
 }
 // class for animals
 
 canvas.addEventListener('click', function(event){
     newx = event.clientX - canvasrect.left + window.scrollX
-    newy = event.clientY  + window.scrollY
+    newy = event.clientY  - canvasrect.top + window.scrollY
     switch(spawnchoice){
         case 1:
             let grass1 = new plants();
             grass1.x = newx
             grass1.y = newy
+            grass1.group = 1
             grass1.color = 'green';
             allplants.push(grass1)
         break;
@@ -52,12 +103,15 @@ canvas.addEventListener('click', function(event){
             let flower1 = new plants();
             flower1.x = newx
             flower1.y = newy
+            flower1.group = 2
+            flower1.color = 'pink'
             allplants.push(flower1)
         break;
         case 3:
             let tree1 = new plants();
             tree1.x = newx
             tree1.y = newy
+            tree1.group = 3
             tree1.color = 'brown'
             tree1.size = 60
             allplants.push(tree1);
@@ -83,6 +137,8 @@ canvas.addEventListener('click', function(event){
 function itterate(){
     for(j=0; j< allplants.length; j++){
         allplants[j].draw();
+        allplants[j].update()
+        allplants[j].seeds();
     }
 }
 // count time passing in seconds, 

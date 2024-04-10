@@ -20,7 +20,7 @@ class plants{
         this.group = 1;
         this.x = 10;
         this.y = 10; 
-        this.size = 10;
+        this.size = 2;
         this.color = 'green';
         this.age = 0
     }
@@ -36,6 +36,7 @@ class plants{
     seeds(){
         if(this.group === 1 && this.age > 1000){
             this.age = 1
+            this.size = 4
             let rx = Math.random() *100 -50;
             let ry = Math.random() *100 -50;
             newx = this.x + rx
@@ -46,8 +47,9 @@ class plants{
                 }
             }
         }
-        else if(this.group === 2 && this.age > 1000){
+        else if(this.group === 2 && this.age > 1400){
             this.age = 1
+            this.size = 10
             let rx = Math.random() *150 -75;
             let ry = Math.random() *150 -75;
             newx = this.x + rx
@@ -60,6 +62,9 @@ class plants{
         }
         else if(this.group === 3 && this.age > 2000){
             this.age = 1
+            if(this.size !== 62){
+                this.size = this.size + 10
+            }
             let rx = Math.random() *500 -250;
             let ry = Math.random() *500 -250;
             newx = this.x + rx
@@ -113,7 +118,6 @@ canvas.addEventListener('click', function(event){
             tree1.y = newy
             tree1.group = 3
             tree1.color = 'brown'
-            tree1.size = 60
             allplants.push(tree1);
         break;
         case 4:
@@ -146,6 +150,8 @@ function itterate(){
 function animate(){
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
     itterate()
+    // fix the layering
+    // add first animals for population controll
     requestAnimationFrame(animate); 
 }
 animate();

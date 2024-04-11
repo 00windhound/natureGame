@@ -38,8 +38,8 @@ class plants{
         ctx.fill();
     }
     seeds(){
-        if(this.group === 1 && this.age > 1000){
-            this.age = Math.random() *5
+        if(this.group === 1 && this.age > 600){
+            this.age = Math.random() *10
             this.size = 4
             let rx = Math.random() *100 -50;
             let ry = Math.random() *100 -50;
@@ -52,7 +52,7 @@ class plants{
             }
         }
         else if(this.group === 2 && this.age > 1400){
-            this.age = Math.random() *5
+            this.age = Math.random() *10
             this.size = 10
             let rx = Math.random() *150 -75;
             let ry = Math.random() *150 -75;
@@ -65,7 +65,7 @@ class plants{
             }
         }
         else if(this.group === 3 && this.age > 2000){
-            this.age = Math.random() *5
+            this.age = Math.random() *10
             if(this.size !== 62){
                 this.size = this.size + 10
             }
@@ -80,35 +80,7 @@ class plants{
             }
         }
     }
-    plantcolisions(){
-        // plants shouldnt be too on top of eachother
-        // nothing under atree
-        for(k=0; k< allplants.length; k++)
-        if(j === k){}
-        else if(j === allplants.length){}
-        else if(k === allplants.length){} // when plants are killed it messes up the count
-        else{
-            let dx = allplants[j].x - allplants[k].x;
-            let dy = allplants[k].y - allplants[k].y;
-            let distance = Math.sqrt(dx * dx + dy * dy)
-            let radii = allplants[j].size + allplants[k].size 
-            if(distance > radii){}
-            else if(distance === radii || distance < radii){
-                // decide which one to kill
-                if(this.age > allplants[k].age){
-                    allplants.splice(k,1) // end the loop?
-                    killplant = true 
-                    kill = k
-                }
-                else{
-                    allplants.splice(j,1)
-                    killplant = true
-                    kill = j
-                }
-            }
-        }
-
-    }
+    
     // colisions so plants arent ontop of eachother
     // reproducing that also checks that location is within the borders
     // trees growing rather large
@@ -165,9 +137,8 @@ class animal{
             this.y = 1500 - this.size;
         }
     }
-    plantcolisions(){
-        // bunnies eat grass animals
-    }
+    // make bunnies eat grass and animals
+    // size slowly shrinks while they eat to get big and reproduce
     // animalcolisions so animals eat eachother
 }
 
@@ -223,19 +194,45 @@ canvas.addEventListener('click', function(event){
     }
 })
 
-function killstuff(){
+function plantcolisions(){
+    // plants shouldnt be too on top of eachother
+    // nothing under atree
+    for(k=0; k< allplants.length; k++)
+    if(j === k){}
+    else if(j === allplants.length){}
+    else if(k === allplants.length){} // when plants are killed it messes up the count
+    else{
+        let dx = allplants[j].x - allplants[k].x;
+        let dy = allplants[k].y - allplants[k].y;
+        let distance = Math.sqrt(dx * dx + dy * dy)
+        let radii = allplants[j].size + allplants[k].size 
+        if(distance > radii){}
+        else if(distance === radii || distance < radii){
+            // decide which one to kill
+            if(this.age > allplants[k].age){
+                allplants.splice(k,1) // end the loop?
+            }
+            else{
+                allplants.splice(j,1)
+            }
+        }
+    }
+
+}
+
+/*function killstuff(){
     if(killplant === true){
         allplants.splice(kill,1);
         killplant = false
     }
-}
+}*/
 
 function itterate(){
     for(j=0; j< allplants.length; j++){
         allplants[j].draw();
-        allplants[j].update()
+        allplants[j].update();
         allplants[j].seeds();
-        //allplants[j].plantcolisions() // seems random
+        //plantcolisions(); // seems random
     }
     for(j=0; j< allanimals.length; j++){
         allanimals[j].update()

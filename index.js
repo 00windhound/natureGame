@@ -14,6 +14,10 @@ let spawnfox = document.getElementById('fox');
 let spawnsnake = document.getElementById('snakes');
 let spawnflies = document.getElementById('flies'); 
 let spawnchoice = 1; 
+let j= 0;
+let k= 0;
+let kill = undefined
+let killplant = false
 
 class plants{
     constructor(){
@@ -35,7 +39,7 @@ class plants{
     }
     seeds(){
         if(this.group === 1 && this.age > 1000){
-            this.age = 1
+            this.age = Math.random() *5
             this.size = 4
             let rx = Math.random() *100 -50;
             let ry = Math.random() *100 -50;
@@ -48,7 +52,7 @@ class plants{
             }
         }
         else if(this.group === 2 && this.age > 1400){
-            this.age = 1
+            this.age = Math.random() *5
             this.size = 10
             let rx = Math.random() *150 -75;
             let ry = Math.random() *150 -75;
@@ -61,7 +65,7 @@ class plants{
             }
         }
         else if(this.group === 3 && this.age > 2000){
-            this.age = 1
+            this.age = Math.random() *5
             if(this.size !== 62){
                 this.size = this.size + 10
             }
@@ -76,7 +80,36 @@ class plants{
             }
         }
     }
-    
+    plantcolisions(){
+        // plants shouldnt be too on top of eachother
+        // nothing under atree
+        for(k=0; k< allplants.length; k++)
+        if(j === k){}
+        else if(j === allplants.length){}
+        else if(k === allplants.length){} // when plants are killed it messes up the count
+        else{
+            let dx = allplants[j].x - allplants[k].x;
+            let dy = allplants[k].y - allplants[k].y;
+            let distance = Math.sqrt(dx * dx + dy * dy)
+            let radii = allplants[j].size + allplants[k].size 
+            if(distance > radii){}
+            else if(distance === radii || distance < radii){
+                // decide which one to kill
+                if(this.age > allplants[k].age){
+                    allplants.splice(k,1) // end the loop?
+                    killplant = true 
+                    kill = k
+                }
+                else{
+                    allplants.splice(j,1)
+                    killplant = true
+                    kill = j
+                }
+            }
+        }
+
+    }
+    // colisions so plants arent ontop of eachother
     // reproducing that also checks that location is within the borders
     // trees growing rather large
     // colision detection for trees so only squirrels can go in a tree
@@ -91,6 +124,52 @@ function newseed(group, x, y, color){
     allplants.push(seed1);
 }
 // class for animals
+
+class animal{
+    constructor(){
+        this.group = 4
+        this.age = 0
+        this.x = 10
+        this.y = 10 
+        this.size =  20
+        this.speedx = Math.random() *3 -1.5
+        this.speedy = Math.random() *3 -1.5
+        this.color = 'white'
+    }
+    update(){
+        this.age += 1
+        this.x += this.speedx 
+        this.y += this.speedy 
+    }
+    draw(){
+        ctx.fillStyle = this.color
+        ctx.beginPath();
+        ctx.arc(this.x,this.y,this.size,0, Math.PI*2);
+        ctx.fill();
+    }
+    walls(){
+        if((this.x - this.size) < 0){
+            this.speedx = this.speedx * -1;
+            this.x = 0 + this.size
+        }
+        else if((this.x + this.size) > 1500){
+            this.speedx = this.speedx * -1;
+            this.x = 1500 - this.size;
+        }
+        else if((this.y - this.size) < 0){
+            this.speedy = this.speedy * -1;
+            this.y = 0 + this.size;
+        }
+        else if((this.y + this.size) > 1500){
+            this.speedy = this.speedy * -1;
+            this.y = 1500 - this.size;
+        }
+    }
+    plantcolisions(){
+        // bunnies eat grass animals
+    }
+    // animalcolisions so animals eat eachother
+}
 
 canvas.addEventListener('click', function(event){
     newx = event.clientX - canvasrect.left + window.scrollX
@@ -121,6 +200,12 @@ canvas.addEventListener('click', function(event){
             allplants.push(tree1);
         break;
         case 4:
+            let bunny1 = new animal()
+            bunny1.x = newx 
+            bunny1.y = newy 
+            bunny1.group = 4
+            bunny1.color = 'white'
+            allanimals.push(bunny1);
         break;
         case 5:
         break;
@@ -138,12 +223,26 @@ canvas.addEventListener('click', function(event){
     }
 })
 
+function killstuff(){
+    if(killplant === true){
+        allplants.splice(kill,1);
+        killplant = false
+    }
+}
+
 function itterate(){
     for(j=0; j< allplants.length; j++){
         allplants[j].draw();
         allplants[j].update()
         allplants[j].seeds();
+        //allplants[j].plantcolisions() // seems random
     }
+    for(j=0; j< allanimals.length; j++){
+        allanimals[j].update()
+        allanimals[j].walls()
+        allanimals[j].draw()
+    }
+    //killstuff();
 }
 // count time passing in seconds, 
 //give things an age to manage growth and reproduction speeds

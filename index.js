@@ -16,8 +16,7 @@ let spawnflies = document.getElementById('flies');
 let spawnchoice = 1; 
 let j= 0;
 let k= 0;
-let kill = undefined
-let killplant = false
+
 
 class plants{
     constructor(){
@@ -205,41 +204,45 @@ function plantcolisions(){
         let dx = allplants[j].x - allplants[k].x;
         let dy = allplants[k].y - allplants[k].y;
         let distance = Math.sqrt(dx * dx + dy * dy)
-        let radii = allplants[j].size + allplants[k].size 
+        let radii = allplants[j].size + allplants[k].size /2;
         if(distance > radii){}
         else if(distance === radii || distance < radii){
             // decide which one to kill
             if(this.age > allplants[k].age){
-                allplants.splice(k,1) // end the loop?
+                //allplants.splice(k,1) // end the loop?
+                allplants[k].color = 'black'
             }
             else{
-                allplants.splice(j,1)
+                //allplants.splice(j,1)
+                allplants[j].color = 'black'
             }
         }
-    }
+    } // still killing way too many
 
 }
 
-/*function killstuff(){
-    if(killplant === true){
-        allplants.splice(kill,1);
-        killplant = false
+function killstuff(){
+   for(j=0; j< allplants.length; j++){
+    if(allplants[j].color === 'black'){
+        allplants.splice(j,1)
+        break;
     }
-}*/
+   }
+}
 
 function itterate(){
     for(j=0; j< allplants.length; j++){
         allplants[j].draw();
         allplants[j].update();
         allplants[j].seeds();
-        //plantcolisions(); // seems random
+        plantcolisions(); // seems random
     }
     for(j=0; j< allanimals.length; j++){
         allanimals[j].update()
         allanimals[j].walls()
         allanimals[j].draw()
     }
-    //killstuff();
+    killstuff();
 }
 // count time passing in seconds, 
 //give things an age to manage growth and reproduction speeds

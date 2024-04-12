@@ -25,7 +25,7 @@ class plants{
         this.y = 10; 
         this.size = 2;
         this.color = 'green';
-        this.age = 0
+        this.age = Math.random() *100
     }
     update(){
         this.age += 1;
@@ -38,7 +38,7 @@ class plants{
     }
     seeds(){
         if(this.group === 1 && this.age > 600){
-            this.age = Math.random() *10
+            this.age = Math.random() *100
             this.size = 4
             let rx = Math.random() *100 -50;
             let ry = Math.random() *100 -50;
@@ -51,7 +51,7 @@ class plants{
             }
         }
         else if(this.group === 2 && this.age > 1400){
-            this.age = Math.random() *10
+            this.age = Math.random() *100
             this.size = 10
             let rx = Math.random() *150 -75;
             let ry = Math.random() *150 -75;
@@ -64,9 +64,20 @@ class plants{
             }
         }
         else if(this.group === 3 && this.age > 2000){
-            this.age = Math.random() *10
-            if(this.size !== 62){
+            this.age = Math.random() *100
+            if(this.size < 70){
                 this.size = this.size + 10
+                // clear any plants overlapping the tree
+                for(k=0; k< allplants.length; k++){
+                    let dx = this.x - allplants[k].x
+                    let dy = this.y - allplants[k].y 
+                    let distance = Math.sqrt(dx * dx + dy * dy)
+                    let radii = this.size + allplants[k].size
+                    if(this.group === k.group){}
+                    else if(distance < radii){
+                        allplants.splice(k,1)
+                    }
+                }
             }
             let rx = Math.random() *500 -250;
             let ry = Math.random() *500 -250;
@@ -92,9 +103,21 @@ function newseed(group, x, y, color){
     seed1.x = x
     seed1.y = y 
     seed1.color = color;
-    allplants.push(seed1);
+    let print = true;
+    for(k=0; k< allplants.length; k++){
+        let dx = seed1.x - allplants[k].x
+        let dy = seed1.y - allplants[k].y 
+        let distance = Math.sqrt(dx * dx + dy * dy)
+        let radii = seed1.size + allplants[k].size
+        if(distance < radii){
+           print = false;
+        }
+    }
+    if(print === true){
+        allplants.push(seed1); 
+    }
 }
-// class for animals
+
 
 class animal{
     constructor(){
@@ -106,6 +129,7 @@ class animal{
         this.speedx = Math.random() *3 -1.5
         this.speedy = Math.random() *3 -1.5
         this.color = 'white'
+        // hunger, stopps eating when full
     }
     update(){
         this.age += 1
@@ -136,8 +160,8 @@ class animal{
             this.y = 1500 - this.size;
         }
     }
-    // make bunnies eat grass and animals
-    // size slowly shrinks while they eat to get big and reproduce
+    // make bunnies eat grass and flowers
+    // reprooduce when age and hunger is above a certain point
     // animalcolisions so animals eat eachother
 }
 
@@ -202,7 +226,7 @@ function plantcolisions(){
     else if(k === allplants.length){} // when plants are killed it messes up the count
     else{
         let dx = allplants[j].x - allplants[k].x;
-        let dy = allplants[k].y - allplants[k].y;
+        let dy = allplants[j].y - allplants[k].y;
         let distance = Math.sqrt(dx * dx + dy * dy)
         let radii = allplants[j].size + allplants[k].size /2;
         if(distance > radii){}
@@ -235,14 +259,14 @@ function itterate(){
         allplants[j].draw();
         allplants[j].update();
         allplants[j].seeds();
-        plantcolisions(); // seems random
+        //plantcolisions(); // seems random
     }
     for(j=0; j< allanimals.length; j++){
         allanimals[j].update()
         allanimals[j].walls()
         allanimals[j].draw()
     }
-    killstuff();
+    //killstuff();
 }
 // count time passing in seconds, 
 //give things an age to manage growth and reproduction speeds

@@ -17,7 +17,7 @@ let spawnchoice = 1;
 let j= 0;
 let k= 0;
 
-
+// seperate arrays for each group
 class plants{
     constructor(){
         this.group = 1;
@@ -73,7 +73,7 @@ class plants{
                     let dy = this.y - allplants[k].y 
                     let distance = Math.sqrt(dx * dx + dy * dy)
                     let radii = this.size + allplants[k].size
-                    if(this.group === k.group){}
+                    if(this.group === allplants[k].group){}
                     else if(distance < radii){
                         allplants.splice(k,1)
                     }

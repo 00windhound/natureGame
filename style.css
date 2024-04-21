@@ -2,3 +2,10 @@
     background: grey;
     border: 2px solid black;
 }
+.addstuff{
+    background-color: lightblue;
+    width: 110px;
+    height: 40px;
+    font-size: 1.6em;
+    border-radius: 10px;
+}

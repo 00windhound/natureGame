@@ -16,8 +16,54 @@ let spawnflies = document.getElementById('flies');
 let spawnchoice = 1; 
 let j= 0;
 let k= 0;
+// ineed to make the buttons light up based on which one is spawn choice
+// probably turn all of them off first then chech each one for spawnchoice
+let spawnbuttons = [];
+spawnbuttons.push(spawngrass, spawnflower, spawntrees, spawnbunnies, spawnbutterfly, spawnsquirel, spawnfrog, spawnfox, spawnsnake, spawnflies)
+
+function glowbutton(){
+    spawnbuttons.forEach(function(element){
+        element.style.backgroundColor = 'lightblue'
+    })
+    switch(spawnchoice){
+        case 1:
+            spawngrass.style.backgroundColor = 'blue'
+        break;
+        case 2:
+            spawnflower.style.backgroundColor = 'blue'
+        break;
+        case 3:
+            spawntrees.style.backgroundColor = 'blue'
+        break;
+        case 4:
+            spawnbunnies.style.backgroundColor = 'blue'
+        break;
+        case 5:
+            spawnbutterfly.style.backgroundColor = 'blue'
+        break;
+        case 6:
+            spawnsquirel.style.backgroundColor = 'blue'
+        break;
+        case 7:
+            spawnfrog.style.backgroundColor = 'blue'
+        break;
+        case 8:
+            spawnsnake.style.backgroundColor = 'blue'
+        break;
+        case 9:
+            spawnfox.style.backgroundColor = 'blue'
+        break;
+        case 10:
+            spawnflies.style.backgroundColor = 'blue'
+        break;
+
+    }
+       
+    
+}
 
 // seperate arrays for each group
+// seperate classes ffor each group
 class plants{
     constructor(){
         this.group = 1;

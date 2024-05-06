@@ -1,8 +1,17 @@
 const canvas = document.getElementById("main");
 var ctx = canvas.getContext('2d');
 var canvasrect = canvas.getBoundingClientRect();
-let allplants = [];
-let allanimals = [];
+let grass = [];
+let flowers = [];
+let trees = [];
+let bunnies = [];
+let butterfly = [];
+let squirel = [];
+let frog = [];
+let fox = [];
+let snake = [];
+let flies = [];
+let allplants = grass.concat(flowers, trees)
 let spawngrass = document.getElementById('grass');
 let spawnflower = document.getElementById('flowers');
 let spawntrees = document.getElementById('trees');
@@ -16,8 +25,6 @@ let spawnflies = document.getElementById('flies');
 let spawnchoice = 1; 
 let j= 0;
 let k= 0;
-// ineed to make the buttons light up based on which one is spawn choice
-// probably turn all of them off first then chech each one for spawnchoice
 let spawnbuttons = [];
 spawnbuttons.push(spawngrass, spawnflower, spawntrees, spawnbunnies, spawnbutterfly, spawnsquirel, spawnfrog, spawnfox, spawnsnake, spawnflies)
 
@@ -63,7 +70,6 @@ function glowbutton(){
 }
 
 // seperate arrays for each group
-// seperate classes ffor each group
 class plants{
     constructor(){
         this.group = 1;
@@ -113,7 +119,6 @@ class plants{
             this.age = Math.random() *100
             if(this.size < 70){
                 this.size = this.size + 10
-                // clear any plants overlapping the tree
                 for(k=0; k< allplants.length; k++){
                     let dx = this.x - allplants[k].x
                     let dy = this.y - allplants[k].y 
@@ -175,12 +180,14 @@ class animal{
         this.speedx = Math.random() *3 -1.5
         this.speedy = Math.random() *3 -1.5
         this.color = 'white'
-        // hunger, stopps eating when full
+        this.hunger = 100
+        // hunger, stops eating when full
     }
     update(){
         this.age += 1
         this.x += this.speedx 
         this.y += this.speedy 
+        this.hunger -= .001
     }
     draw(){
         ctx.fillStyle = this.color
@@ -209,6 +216,40 @@ class animal{
     // make bunnies eat grass and flowers
     // reprooduce when age and hunger is above a certain point
     // animalcolisions so animals eat eachother
+}
+
+function babies(){ // just for bunnies?
+    // use groups to only check same spiecies
+    bunnies.forEach(function(j){
+       // compare distances an have them reproduce if touching
+       for(k= 1; k<bunnies.length; k++){
+       if(j === bunnies.k){}
+       else{
+       let dx = j.x - bunnies[k].x
+       let dy = j.y - bunnies[k].y
+       let distance = Math.sqrt(dx*dx + dy*dy)
+       let radii = j.size + bunnies[k].size 
+       if(distance< radii){
+        // problem is i only want one baby
+        // check age check hunger check recent breeding
+        // maybe an adult age and a breeding age when they breed it goes down to adult age not baby age
+        if(j.age > 100 && bunnies[k].age > 100){
+            // need to check hunger
+            let bunny1 = new animal()
+            bunny1.x = newx 
+            bunny1.y = newy 
+            bunny1.group = 4
+            bunny1.color = 'white'
+            bunnies.push(bunny1);
+            j.age === 10
+            bunnies[k].age === 10
+        }
+       }
+       }
+       }
+
+    })
+
 }
 
 canvas.addEventListener('click', function(event){
@@ -245,7 +286,7 @@ canvas.addEventListener('click', function(event){
             bunny1.y = newy 
             bunny1.group = 4
             bunny1.color = 'white'
-            allanimals.push(bunny1);
+            bunnies.push(bunny1);
         break;
         case 5:
         break;
@@ -301,6 +342,8 @@ function killstuff(){
 }
 
 function itterate(){
+    
+    let allanimals = bunnies.concat(butterfly, squirel, frog, fox, snake, flies)
     for(j=0; j< allplants.length; j++){
         allplants[j].draw();
         allplants[j].update();
@@ -312,6 +355,7 @@ function itterate(){
         allanimals[j].walls()
         allanimals[j].draw()
     }
+    babies();
     //killstuff();
 }
 // count time passing in seconds, 

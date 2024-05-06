@@ -223,7 +223,7 @@ function babies(){ // just for bunnies?
     bunnies.forEach(function(j){
        // compare distances an have them reproduce if touching
        for(k= 1; k<bunnies.length; k++){
-       if(j === bunnies.k){}
+       if(j === bunnies[k]){}
        else{
        let dx = j.x - bunnies[k].x
        let dy = j.y - bunnies[k].y
@@ -236,13 +236,13 @@ function babies(){ // just for bunnies?
         if(j.age > 100 && bunnies[k].age > 100){
             // need to check hunger
             let bunny1 = new animal()
-            bunny1.x = newx 
-            bunny1.y = newy 
+            bunny1.x = j.x 
+            bunny1.y = j.y
             bunny1.group = 4
             bunny1.color = 'white'
             bunnies.push(bunny1);
-            j.age === 10
-            bunnies[k].age === 10
+            j.age = 10
+            bunnies[k].age = 10
         }
        }
        }

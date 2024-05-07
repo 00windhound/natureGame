@@ -63,10 +63,7 @@ function glowbutton(){
         case 10:
             spawnflies.style.backgroundColor = 'blue'
         break;
-
     }
-       
-    
 }
 
 // seperate arrays for each group
@@ -88,8 +85,8 @@ class plants{
         ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
         ctx.fill();
     }
-    seeds(){
-        if(this.group === 1 && this.age > 600){
+   /* seeds(){
+        if( && this.age > 600){
             this.age = Math.random() *100
             this.size = 4
             let rx = Math.random() *100 -50;
@@ -140,12 +137,30 @@ class plants{
                 }
             }
         }
-    }
+    }*/
     
     // colisions so plants arent ontop of eachother
     // reproducing that also checks that location is within the borders
     // trees growing rather large
     // colision detection for trees so only squirrels can go in a tree
+}
+
+function seedgrass(){
+
+}
+
+function distance(thing1, thing2){
+    // measure distence between two things so i dont have to wright this a dozen times
+    let dx = thing1.x - thing2.x;
+    let dy = thing1.y - thing2.y;
+    let distance = Math.sqrt(dx*dx + dy*dy)
+    let radii = thing1.size + thing2.size;
+    if(distance < radii){
+        return true;
+    }
+    else{
+        return false;
+    } // not sure i have this right
 }
 
 function newseed(group, x, y, color){
@@ -156,15 +171,31 @@ function newseed(group, x, y, color){
     seed1.color = color;
     let print = true;
     for(k=0; k< allplants.length; k++){
-        let dx = seed1.x - allplants[k].x
+        let print = distance(seed1, allplants[k])
+        if(print === true)return
+        else{
+            switch(seed1.group){
+                case 1: 
+                    grass.push(seed1)
+                break;
+                case 2:
+                    flowers.push(seed1)
+                break;
+                case 3:
+                    trees.push(seed1)
+                break;
+            }
+
+        }
+        /*let dx = seed1.x - allplants[k].x
         let dy = seed1.y - allplants[k].y 
         let distance = Math.sqrt(dx * dx + dy * dy)
         let radii = seed1.size + allplants[k].size
         if(distance < radii){
            print = false;
-        }
+        }*/
     }
-    if(print === true){
+    if(print === false){
         allplants.push(seed1); 
     }
 }
@@ -251,6 +282,34 @@ function babies(){ // just for bunnies?
     })
 
 }
+// next they need to die!!
+// hunger gradually decreases, 
+// when hungry they kill and eat grass, 
+// when starve they die
+function bunnyeats(){
+    bunnies.forEach(function(b){
+        if(b.hunger < 99){
+            for(g=0; g< grass.length; g++){
+                let touching = distance(b, grass[g])
+                console.log(touching)
+            }
+           /* grass.forEach(function(g){
+               let touching = distance(b, g)
+               if(touching === true){
+                grass.splice(g,1)
+                b.hunger +=1
+               }
+            })
+            flowers.forEach(function(f){
+                let touching = distance(b, f)
+                if(touching === true){
+                    flowers.splice(f,1)
+                    b.hunger +=3
+                }
+            })*/
+        }
+    })
+}
 
 canvas.addEventListener('click', function(event){
     newx = event.clientX - canvasrect.left + window.scrollX
@@ -306,7 +365,7 @@ canvas.addEventListener('click', function(event){
 
 function plantcolisions(){
     // plants shouldnt be too on top of eachother
-    // nothing under atree
+    // nothing under a tree
     for(k=0; k< allplants.length; k++)
     if(j === k){}
     else if(j === allplants.length){}
@@ -356,6 +415,7 @@ function itterate(){
         allanimals[j].draw()
     }
     babies();
+    bunnyeats();
     //killstuff();
 }
 // count time passing in seconds, 

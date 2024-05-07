@@ -25,6 +25,7 @@ let spawnflies = document.getElementById('flies');
 let spawnchoice = 1; 
 let j= 0;
 let k= 0;
+let touching = false;
 let spawnbuttons = [];
 spawnbuttons.push(spawngrass, spawnflower, spawntrees, spawnbunnies, spawnbutterfly, spawnsquirel, spawnfrog, spawnfox, spawnsnake, spawnflies)
 
@@ -67,9 +68,9 @@ function glowbutton(){
 }
 
 // seperate arrays for each group
-class plants{
-    constructor(){
-        this.group = 1;
+class plants{ 
+    constructor(group, x, y, color){ //put arguements here and create seeds this way
+        this.group = a;
         this.x = 10;
         this.y = 10; 
         this.size = 2;
@@ -86,7 +87,7 @@ class plants{
         ctx.fill();
     }
    /* seeds(){
-        if( && this.age > 600){
+        if( this.age > 600){
             this.age = Math.random() *100
             this.size = 4
             let rx = Math.random() *100 -50;
@@ -146,7 +147,22 @@ class plants{
 }
 
 function seedgrass(){
-
+    grass.forEach(function(g){
+        if(g.age > 600){
+            g.age = Math.random *100
+            g.size = 4
+            let rx = Math.random() *100 -50;
+            let ry = Math.random() *100 -50;
+            newx = g.x + rx
+            newy = g.y + ry
+                    let seed = newseed(1,newx,newy,'green')
+                    if( touching = false){
+                        grass.push(seed)
+                    }
+                
+            
+        }
+    })
 }
 
 function distance(thing1, thing2){
@@ -155,15 +171,25 @@ function distance(thing1, thing2){
     let dy = thing1.y - thing2.y;
     let distance = Math.sqrt(dx*dx + dy*dy)
     let radii = thing1.size + thing2.size;
+    touching = false
     if(distance < radii){
-        return true;
+        touching = true
     }
-    else{
-        return false;
-    } // not sure i have this right
 }
 
 function newseed(group, x, y, color){
+    if(x>0 && x<1500){
+        if(y>0 && y<1500){
+            let seed1 = new plants(group, x, y, color)
+
+            for(a=0; a< allplants.length; a++){
+                distance(seed1, allplants[a])
+                if(touching = true) return // maybe count up if still false, if not working
+            }
+
+        }
+    }
+
     let seed1 = new plants();
     seed1.group = group
     seed1.x = x
@@ -316,28 +342,16 @@ canvas.addEventListener('click', function(event){
     newy = event.clientY  - canvasrect.top + window.scrollY
     switch(spawnchoice){
         case 1:
-            let grass1 = new plants();
-            grass1.x = newx
-            grass1.y = newy
-            grass1.group = 1
-            grass1.color = 'green';
-            allplants.push(grass1)
+            let grass1 = new plants(1, newx, newy, 'green');
+            grass.push(grass1)
         break;
         case 2:
-            let flower1 = new plants();
-            flower1.x = newx
-            flower1.y = newy
-            flower1.group = 2
-            flower1.color = 'pink'
-            allplants.push(flower1)
+            let flower1 = new plants(2,newx, newy, 'pink');
+            flowers.push(flower1)
         break;
         case 3:
-            let tree1 = new plants();
-            tree1.x = newx
-            tree1.y = newy
-            tree1.group = 3
-            tree1.color = 'brown'
-            allplants.push(tree1);
+            let tree1 = new plants(3, newx, newy, 'brown');
+            trees.push(tree1);
         break;
         case 4:
             let bunny1 = new animal()

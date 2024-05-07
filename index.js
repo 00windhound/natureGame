@@ -11,7 +11,7 @@ let frog = [];
 let fox = [];
 let snake = [];
 let flies = [];
-let allplants = grass.concat(flowers, trees)
+let allplants = [];
 let spawngrass = document.getElementById('grass');
 let spawnflower = document.getElementById('flowers');
 let spawntrees = document.getElementById('trees');
@@ -26,6 +26,7 @@ let spawnchoice = 1;
 let j= 0;
 let k= 0;
 let touching = false;
+let approved = true;
 let spawnbuttons = [];
 spawnbuttons.push(spawngrass, spawnflower, spawntrees, spawnbunnies, spawnbutterfly, spawnsquirel, spawnfrog, spawnfox, spawnsnake, spawnflies)
 
@@ -67,14 +68,13 @@ function glowbutton(){
     }
 }
 
-// seperate arrays for each group
 class plants{ 
-    constructor(group, x, y, color){ //put arguements here and create seeds this way
-        this.group = a;
-        this.x = 10;
-        this.y = 10; 
+    constructor(group, x, y, color){
+        this.group = group;
+        this.x = x;
+        this.y = y; 
         this.size = 2;
-        this.color = 'green';
+        this.color = color;
         this.age = Math.random() *100
     }
     update(){
@@ -86,20 +86,7 @@ class plants{
         ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
         ctx.fill();
     }
-   /* seeds(){
-        if( this.age > 600){
-            this.age = Math.random() *100
-            this.size = 4
-            let rx = Math.random() *100 -50;
-            let ry = Math.random() *100 -50;
-            newx = this.x + rx
-            newy = this.y + ry
-            if(newx> 0 && newx< 1500){
-                if(newy >0 && newy < 1500){
-                    newseed(1, newx, newy, 'green')
-                }
-            }
-        }
+  /*
         else if(this.group === 2 && this.age > 1400){
             this.age = Math.random() *100
             this.size = 10
@@ -149,48 +136,55 @@ class plants{
 function seedgrass(){
     grass.forEach(function(g){
         if(g.age > 600){
-            g.age = Math.random *100
+            g.age = Math.random() *100
             g.size = 4
             let rx = Math.random() *100 -50;
             let ry = Math.random() *100 -50;
             newx = g.x + rx
             newy = g.y + ry
-                    let seed = newseed(1,newx,newy,'green')
-                    if( touching = false){
+                    //let seed = newseed(1,newx,newy,'green') // seed is undefined
+                    let seed = new plants(1,newx, newy,'green')
+                    approved = true;
+                    newseed(seed.x, seed.y, seed.size)
+                    if( approved = true){ // put this in seed function
                         grass.push(seed)
                     }
-                
+                // maybe make the seed here then sent it to seed function for testing its location
             
         }
     })
 }
 
-function distance(thing1, thing2){
-    // measure distence between two things so i dont have to wright this a dozen times
-    let dx = thing1.x - thing2.x;
-    let dy = thing1.y - thing2.y;
+function distance(x, y, size, thing2){
+    let dx = x - thing2.x;
+    let dy = y - thing2.y;
     let distance = Math.sqrt(dx*dx + dy*dy)
-    let radii = thing1.size + thing2.size;
-    touching = false
+    let radii = size + thing2.size;
+   //touching = false; make false before calling this function
     if(distance < radii){
         touching = true
     }
 }
 
-function newseed(group, x, y, color){
-    if(x>0 && x<1500){
-        if(y>0 && y<1500){
-            let seed1 = new plants(group, x, y, color)
-
-            for(a=0; a< allplants.length; a++){
-                distance(seed1, allplants[a])
-                if(touching = true) return // maybe count up if still false, if not working
-            }
-
-        }
+function newseed(x, y, size){// test its location 
+    if(x<0 || x>1500){
+        approved = false;
     }
+    if(y<0 || y>1500){
+        approved = false;
+    }
+    touching = false;
+    for(a=0; a< allplants.length; a++){
+        distance(x, y, size, allplants[a]) // maybe count up if still false, if not working. it souldnt break cuz im not changing it back
+    }
+    if(touching === true){
+        approved = false
+    }
+}
+    
 
-    let seed1 = new plants();
+
+   /* let seed1 = new plants();
     seed1.group = group
     seed1.x = x
     seed1.y = y 
@@ -213,18 +207,18 @@ function newseed(group, x, y, color){
             }
 
         }
-        /*let dx = seed1.x - allplants[k].x
+        let dx = seed1.x - allplants[k].x
         let dy = seed1.y - allplants[k].y 
         let distance = Math.sqrt(dx * dx + dy * dy)
         let radii = seed1.size + allplants[k].size
         if(distance < radii){
            print = false;
-        }*/
+        }
     }
     if(print === false){
         allplants.push(seed1); 
-    }
-}
+    }*/
+
 
 
 class animal{
@@ -405,22 +399,22 @@ function plantcolisions(){
 
 }
 
-function killstuff(){
+/*function killstuff(){
    for(j=0; j< allplants.length; j++){
     if(allplants[j].color === 'black'){
         allplants.splice(j,1)
         break;
     }
    }
-}
+}*/
 
 function itterate(){
-    
+    allplants = grass.concat(flowers, trees)
     let allanimals = bunnies.concat(butterfly, squirel, frog, fox, snake, flies)
     for(j=0; j< allplants.length; j++){
         allplants[j].draw();
         allplants[j].update();
-        allplants[j].seeds();
+        seedgrass()
         //plantcolisions(); // seems random
     }
     for(j=0; j< allanimals.length; j++){

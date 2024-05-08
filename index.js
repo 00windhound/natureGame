@@ -25,7 +25,6 @@ let spawnflies = document.getElementById('flies');
 let spawnchoice = 1; 
 let j= 0;
 let k= 0;
-let touching = false;
 let spawnbuttons = [];
 spawnbuttons.push(spawngrass, spawnflower, spawntrees, spawnbunnies, spawnbutterfly, spawnsquirel, spawnfrog, spawnfox, spawnsnake, spawnflies)
 
@@ -97,7 +96,7 @@ function seedgrass(){
             newx = g.x + rx
             newy = g.y + ry
             let seed = new plants(1,newx, newy,'green')
-            let approved = seedverify(seed.x, seed.y, seed.size)
+            let approved = seedverify(seed)
             if( approved === true){ 
                 grass.push(seed)
             }
@@ -111,8 +110,7 @@ function seedflower(){
             f.age = Math.random() *100;
             f.size = 10;
             for(a=0; a<grass.length; a++){
-                touching = false;
-                distance(f.x, f.y, f.size, grass[a])
+                let touching = colision(f, grass[a])
                 if(touching === true){
                     grass.splice(a,1) // it broke killing a hell of a lot more than 1
                 }
@@ -122,7 +120,7 @@ function seedflower(){
             newx = f.x + rx // can i make the math in less lines
             newy = f.y + ry
             let seed = new plants(2, newx, newy, 'pink')
-            let approved = seedverify(seed.x, seed.y, seed.size)
+            let approved = seedverify(seed)
             if(approved === true){
                 flowers.push(seed)
             }
@@ -136,15 +134,13 @@ function seedtrees(){
             t.size += .02
             // kill touching plants
             for(a=0; a< grass.length; a++){
-                touching = false;
-                distance(t.x, t.y, t.size, grass[a])
+                let touching = colision(t, grass[a])
                 if(touching === true){
                     grass.splice(a,1)
                 }
             } // there is some randomness going on here
             for(a=0; a<flowers.length; a++){
-                touching = false;
-                distance(t.x, t.y, t.size, flowers[a])
+                let touching = colision(t, flowers[a])
                 if(touching === true){
                     flowers.splice(a,1)
                 }
@@ -157,7 +153,7 @@ function seedtrees(){
             newx = t.x + rx;
             newy = t.y + ry;
             let seed = new plants(3, newx, newy, 'hsl(25, 22%, 20%)')
-            let approved = seedverify(seed.x, seed.y, seed.size)
+            let approved = seedverify(seed)
             if(approved === true){
                 trees.push(seed)
             }
@@ -165,54 +161,54 @@ function seedtrees(){
     })
 }
 
-function distance(x, y, size, thing2){
-    let dx = x - thing2.x;
-    let dy = y - thing2.y;
+function colision(thing1, thing2){ // go back to thing1 and thing2
+    let touching = false;
+    let dx = thing1.x - thing2.x;
+    let dy = thing1.y - thing2.y;
     let distance = Math.sqrt(dx*dx + dy*dy)
-    let radii = size + thing2.size;
-   //touching = false; make false before calling this function
+    let radii = thing1.size + thing2.size;
     if(distance < radii){
         touching = true
     }
+    return touching;
 }
 
-function seedverify(x, y, size){// test its location 
+function seedverify(seed){// test its location 
     let approved = true;
-    if(x<0 || x>1500){
+    if(seed.x<0 || seed.x>1500){
         approved = false;
     }
-    if(y<0 || y>1500){
+    if(seed.y<0 || seed.y>1500){
         approved = false;
     }
     touching = false;
     for(a=0; a< allplants.length; a++){
-        distance(x, y, size, allplants[a]) // maybe count up if still false, if not working. it souldnt break cuz im not changing it back
-    }
-    if(touching === true){
-        approved = false
+        let touching = colision(seed, allplants[a]) // maybe count up if still false, if not working. it souldnt break cuz im not changing it back
+        if(touching === true){
+            approved = false
+        }
     }
     return approved;
 }
 
 
 class animal{
-    constructor(){
-        this.group = 4
+    constructor(group, x, y, color){
+        this.group = group
         this.age = 0
-        this.x = 10
-        this.y = 10 
-        this.size =  20
+        this.x = x
+        this.y = y
+        this.size =  4
         this.speedx = Math.random() *3 -1.5
         this.speedy = Math.random() *3 -1.5
-        this.color = 'white'
+        this.color = color
         this.hunger = 100
-        // hunger, stops eating when full
     }
     update(){
         this.age += 1
         this.x += this.speedx 
         this.y += this.speedy 
-        this.hunger -= .001
+        this.hunger -= .05
     }
     draw(){
         ctx.fillStyle = this.color
@@ -243,18 +239,51 @@ class animal{
     // animalcolisions so animals eat eachother
 }
 
-function babies(){ // just for bunnies?
-    // use groups to only check same spiecies
+function forbunnies(){
+    bunnies.forEach(function(b){
+        if(b.size < 20){
+            b.size += .01
+        } //  have color dim if hungry
+        // eat then dim then die
+        if(b.hunger < 99){
+            for(g=0; g<grass.length; g++){
+                let touching = colision(b, grass[g])
+                if(touching === true){
+                    grass.splice(g,1)
+                    b.hunger += 1
+                }
+            }
+            for(f=0; f<flowers.length; f++){
+                let touching = colision(b, flowers[f])
+                if(touching === true){
+                    flowers.splice(f,1)
+                    b.hunger += 5
+                }
+            }
+            if(b.hunger < 0){
+                // i think i need a dead animals array
+                bunnies.splice(b,1)
+            }
+        }
+        if(b.hunger < 15){
+            // dim
+        }
+    })
+} // i need a way to diplay hunger
+
+/*
+function forbunnies(){
     bunnies.forEach(function(j){
        // compare distances an have them reproduce if touching
        for(k= 1; k<bunnies.length; k++){
        if(j === bunnies[k]){}
        else{
-       let dx = j.x - bunnies[k].x
-       let dy = j.y - bunnies[k].y
-       let distance = Math.sqrt(dx*dx + dy*dy)
-       let radii = j.size + bunnies[k].size 
-       if(distance< radii){
+        touching = false;
+        distance(j.x, j.y, j.size, bunnies[k])
+        if(touching === true){
+
+        }
+    
         // problem is i only want one baby
         // check age check hunger check recent breeding
         // maybe an adult age and a breeding age when they breed it goes down to adult age not baby age
@@ -275,35 +304,11 @@ function babies(){ // just for bunnies?
 
     })
 
-}
+}*/
 // next they need to die!!
 // hunger gradually decreases, 
 // when hungry they kill and eat grass, 
-// when starve they die
-function bunnyeats(){
-    bunnies.forEach(function(b){
-        if(b.hunger < 99){
-            for(g=0; g< grass.length; g++){
-                let touching = distance(b, grass[g])
-                console.log(touching)
-            }
-           /* grass.forEach(function(g){
-               let touching = distance(b, g)
-               if(touching === true){
-                grass.splice(g,1)
-                b.hunger +=1
-               }
-            })
-            flowers.forEach(function(f){
-                let touching = distance(b, f)
-                if(touching === true){
-                    flowers.splice(f,1)
-                    b.hunger +=3
-                }
-            })*/
-        }
-    })
-}
+// when starve they die/*
 
 canvas.addEventListener('click', function(event){
     newx = event.clientX - canvasrect.left + window.scrollX
@@ -322,11 +327,7 @@ canvas.addEventListener('click', function(event){
             trees.push(tree1);
         break;
         case 4:
-            let bunny1 = new animal()
-            bunny1.x = newx 
-            bunny1.y = newy 
-            bunny1.group = 4
-            bunny1.color = 'white'
+            let bunny1 = new animal(4,newx, newy, 'white')
             bunnies.push(bunny1);
         break;
         case 5:
@@ -399,17 +400,14 @@ function itterate(){
         allanimals[j].walls()
         allanimals[j].draw()
     }
-    babies();
-    bunnyeats();
-    //killstuff();
+    forbunnies()
+    //bunnyeats();
 }
-// count time passing in seconds, 
-//give things an age to manage growth and reproduction speeds
+
 function animate(){
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
     itterate()
     // fix the layering
-    // add first animals for population controll
     requestAnimationFrame(animate); 
 }
 animate();

@@ -26,7 +26,6 @@ let spawnchoice = 1;
 let j= 0;
 let k= 0;
 let touching = false;
-let approved = true;
 let spawnbuttons = [];
 spawnbuttons.push(spawngrass, spawnflower, spawntrees, spawnbunnies, spawnbutterfly, spawnsquirel, spawnfrog, spawnfox, spawnsnake, spawnflies)
 
@@ -87,20 +86,10 @@ class plants{
         ctx.fill();
     }
   /*
-        else if(this.group === 2 && this.age > 1400){
-            this.age = Math.random() *100
-            this.size = 10
-            let rx = Math.random() *150 -75;
-            let ry = Math.random() *150 -75;
-            newx = this.x + rx
-            newy = this.y + ry
-            if(newx> 0 && newx< 1500){
-                if(newy >0 && newy < 1500){
-                    newseed(2, newx, newy, 'pink')
-                }
-            }
-        }
-        else if(this.group === 3 && this.age > 2000){
+       
+            
+          
+    
             this.age = Math.random() *100
             if(this.size < 70){
                 this.size = this.size + 10
@@ -142,15 +131,51 @@ function seedgrass(){
             let ry = Math.random() *100 -50;
             newx = g.x + rx
             newy = g.y + ry
-                    //let seed = newseed(1,newx,newy,'green') // seed is undefined
-                    let seed = new plants(1,newx, newy,'green')
-                    approved = true;
-                    newseed(seed.x, seed.y, seed.size)
-                    if( approved = true){ // put this in seed function
-                        grass.push(seed)
-                    }
-                // maybe make the seed here then sent it to seed function for testing its location
-            
+            let seed = new plants(1,newx, newy,'green')
+            let approved = seedverify(seed.x, seed.y, seed.size)
+            if( approved === true){ // the verify works but when it comes back here its always true
+                grass.push(seed)
+            }
+                // maybe make the seed here then sent it to seed function for testing its location 
+        }
+    })
+}
+
+function seedflower(){
+    flowers.forEach(function(f){
+        if(f.age > 1400){
+            f.age = Math.random() *100;
+            f.size = 10;
+            let rx = Math.random() *150 -75;
+            let ry = Math.random() *150 -75;
+            newx = f.x + rx // can i make the math in less lines
+            newy = f.y + ry
+            let seed = new plants(2, newx, newy, 'pink')
+            let approved = seedverify(seed.x, seed.y, seed.size)
+            if(approved === true){
+                flowers.push(seed)
+            }
+        }
+    })
+}
+
+function seedtrees(){
+    trees.forEach(function(t){
+        if(t.size < 70){
+            t.size += .02
+            // kill touching plants
+        }
+        if(t.age > 2000){
+            t.age = Math.random() * 100;
+            let rx = Math.random() * 500 - 250
+            let ry = Math.random() * 500 - 250
+            newx = t.x + rx;
+            newy = t.y + ry;
+            let seed = new plants(3, newx, newy, 'brown')
+            let approved = seedverify(seed.x, seed.y, seed.size)
+            if(approved === true){
+                trees.push(seed)
+            }
         }
     })
 }
@@ -166,7 +191,8 @@ function distance(x, y, size, thing2){
     }
 }
 
-function newseed(x, y, size){// test its location 
+function seedverify(x, y, size){// test its location 
+    let approved = true;
     if(x<0 || x>1500){
         approved = false;
     }
@@ -180,6 +206,7 @@ function newseed(x, y, size){// test its location
     if(touching === true){
         approved = false
     }
+    return approved;
 }
     
 
@@ -371,7 +398,7 @@ canvas.addEventListener('click', function(event){
     }
 })
 
-function plantcolisions(){
+/*function plantcolisions(){
     // plants shouldnt be too on top of eachother
     // nothing under a tree
     for(k=0; k< allplants.length; k++)
@@ -397,7 +424,7 @@ function plantcolisions(){
         }
     } // still killing way too many
 
-}
+}*/
 
 /*function killstuff(){
    for(j=0; j< allplants.length; j++){
@@ -411,6 +438,9 @@ function plantcolisions(){
 function itterate(){
     allplants = grass.concat(flowers, trees)
     let allanimals = bunnies.concat(butterfly, squirel, frog, fox, snake, flies)
+    seedgrass();
+    seedflower();
+    seedtrees();
     for(j=0; j< allplants.length; j++){
         allplants[j].draw();
         allplants[j].update();

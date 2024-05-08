@@ -85,42 +85,11 @@ class plants{
         ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
         ctx.fill();
     }
-  /*  
-           
-            if(this.size < 70){
-                this.size = this.size + 10
-                for(k=0; k< allplants.length; k++){
-                    let dx = this.x - allplants[k].x
-                    let dy = this.y - allplants[k].y 
-                    let distance = Math.sqrt(dx * dx + dy * dy)
-                    let radii = this.size + allplants[k].size
-                    if(this.group === allplants[k].group){}
-                    else if(distance < radii){
-                        allplants.splice(k,1)
-                    }
-                }
-            }
-            let rx = Math.random() *500 -250;
-            let ry = Math.random() *500 -250;
-            newx = this.x + rx
-            newy = this.y + ry
-            if(newx> 0 && newx< 1500){
-                if(newy >0 && newy < 1500){
-                    newseed(3, newx, newy, 'brown')
-                }
-            }
-        }
-    }*/
-    
-    // colisions so plants arent ontop of eachother
-    // reproducing that also checks that location is within the borders
-    // trees growing rather large
-    // colision detection for trees so only squirrels can go in a tree
 }
 
 function seedgrass(){
     grass.forEach(function(g){
-        if(g.age > 600){
+        if(g.age > 640){
             g.age = Math.random() *100
             g.size = 4
             let rx = Math.random() *100 -50;
@@ -163,11 +132,22 @@ function seedflower(){
 
 function seedtrees(){
     trees.forEach(function(t){
-        if(t.size < 70){
+        if(t.size < 100){
             t.size += .02
             // kill touching plants
             for(a=0; a< grass.length; a++){
-                
+                touching = false;
+                distance(t.x, t.y, t.size, grass[a])
+                if(touching === true){
+                    grass.splice(a,1)
+                }
+            } // there is some randomness going on here
+            for(a=0; a<flowers.length; a++){
+                touching = false;
+                distance(t.x, t.y, t.size, flowers[a])
+                if(touching === true){
+                    flowers.splice(a,1)
+                }
             }
         }
         if(t.age > 2000){

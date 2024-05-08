@@ -193,44 +193,6 @@ function seedverify(x, y, size){// test its location
     }
     return approved;
 }
-    
-
-
-   /* let seed1 = new plants();
-    seed1.group = group
-    seed1.x = x
-    seed1.y = y 
-    seed1.color = color;
-    let print = true;
-    for(k=0; k< allplants.length; k++){
-        let print = distance(seed1, allplants[k])
-        if(print === true)return
-        else{
-            switch(seed1.group){
-                case 1: 
-                    grass.push(seed1)
-                break;
-                case 2:
-                    flowers.push(seed1)
-                break;
-                case 3:
-                    trees.push(seed1)
-                break;
-            }
-
-        }
-        let dx = seed1.x - allplants[k].x
-        let dy = seed1.y - allplants[k].y 
-        let distance = Math.sqrt(dx * dx + dy * dy)
-        let radii = seed1.size + allplants[k].size
-        if(distance < radii){
-           print = false;
-        }
-    }
-    if(print === false){
-        allplants.push(seed1); 
-    }*/
-
 
 
 class animal{

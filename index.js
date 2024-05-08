@@ -85,12 +85,8 @@ class plants{
         ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
         ctx.fill();
     }
-  /*
-       
-            
-          
-    
-            this.age = Math.random() *100
+  /*  
+           
             if(this.size < 70){
                 this.size = this.size + 10
                 for(k=0; k< allplants.length; k++){
@@ -133,10 +129,9 @@ function seedgrass(){
             newy = g.y + ry
             let seed = new plants(1,newx, newy,'green')
             let approved = seedverify(seed.x, seed.y, seed.size)
-            if( approved === true){ // the verify works but when it comes back here its always true
+            if( approved === true){ 
                 grass.push(seed)
             }
-                // maybe make the seed here then sent it to seed function for testing its location 
         }
     })
 }
@@ -146,6 +141,13 @@ function seedflower(){
         if(f.age > 1400){
             f.age = Math.random() *100;
             f.size = 10;
+            for(a=0; a<grass.length; a++){
+                touching = false;
+                distance(f.x, f.y, f.size, grass[a])
+                if(touching === true){
+                    grass.splice(a,1) // it broke killing a hell of a lot more than 1
+                }
+            }
             let rx = Math.random() *150 -75;
             let ry = Math.random() *150 -75;
             newx = f.x + rx // can i make the math in less lines
@@ -164,6 +166,9 @@ function seedtrees(){
         if(t.size < 70){
             t.size += .02
             // kill touching plants
+            for(a=0; a< grass.length; a++){
+                
+            }
         }
         if(t.age > 2000){
             t.age = Math.random() * 100;
@@ -171,7 +176,7 @@ function seedtrees(){
             let ry = Math.random() * 500 - 250
             newx = t.x + rx;
             newy = t.y + ry;
-            let seed = new plants(3, newx, newy, 'brown')
+            let seed = new plants(3, newx, newy, 'hsl(25, 22%, 20%)')
             let approved = seedverify(seed.x, seed.y, seed.size)
             if(approved === true){
                 trees.push(seed)
@@ -371,7 +376,7 @@ canvas.addEventListener('click', function(event){
             flowers.push(flower1)
         break;
         case 3:
-            let tree1 = new plants(3, newx, newy, 'brown');
+            let tree1 = new plants(3, newx, newy, 'hsl(25, 22%, 30%)');
             trees.push(tree1);
         break;
         case 4:
